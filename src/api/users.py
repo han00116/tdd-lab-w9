@@ -51,6 +51,24 @@ class Users(Resource):
     @api.marshal_with(user, as_list=True)
     def get(self):
         return User.query.all(), 200
-    
+    @api.marshal_with(user)
+    def put (self, user_id):
+        user = User.query.get(user_id)
+        if not user:
+            api.abort(404)
+        data = request.get_json()
+        if 'username' in data:
+            user.username = data['username']
+        if 'email' in data:
+            user.email = data['email']
+        db.session.commit()
+        return user, 200
+    def delete(self, user_id):
+        user = User.query.get(user_id)
+        if not user:
+            api.abort(404)
+        db.session.delete(user)
+        db.session.commit()
+        return {'message': f'user deleted'}, 200
 
 api.add_resource(Users, '/users/<int:user_id>')

@@ -96,3 +96,21 @@ def test_all_users(test_app, test_database, add_user):
     assert 'fletcher' in data[1]['username']
     assert 'fletcher@notreal.com' in data[1]['email']
 
+def test_update_user(test_app, test_database, add_user):
+    user = add_user('john', 'john@algonquincollege.com')
+    client = test_app.test_client()
+    updated_data = {'username': 'updated_john', 'email': 'updated_john@algonquincollege.com'}
+    resp = client.put(f'/users/{user.id}', data=json.dumps(updated_data), content_type='application/json')
+    assert resp.status_code == 200
+    updated_user = User.query.filter_by(id=user.id).first()
+    assert updated_user.username == 'updated_john'
+    assert updated_user.email == 'updated_john@algonquincollege.com'
+
+
+def test_delete_user(test_app, test_database, add_user):
+    user = add_user('fletcher', 'fletcher@notreal.com')
+    client = test_app.test_client()
+    resp = client.delete(f'/users/{user.id}')
+    assert resp.status_code == 200
+    deleted_user = User.query.filter_by(id=user.id).first()
+    assert deleted_user is None
