@@ -87,7 +87,7 @@ def test_all_users(test_app, test_database, add_user):
     add_user('john', ' john@algonquincollege.com')
     add_user('fletcher', 'fletcher@notreal.com')
     client = test_app.test_client()
-    resp = client.get('/users')
+    resp = client.get_all('/users')
     data = json.loads(resp.data.decode())
     assert resp.status_code == 200
     assert len(data) == 2

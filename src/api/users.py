@@ -49,7 +49,7 @@ class Users(Resource):
             api.abort(404, f"User {user_id} does not exist")
         return user, 200
     @api.marshal_with(user, as_list=True)
-    def get(self):
+    def get_all(self):
         return User.query.all(), 200
     @api.marshal_with(user)
     def put (self, user_id):
